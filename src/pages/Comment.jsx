@@ -1,14 +1,13 @@
 import { TextField, Typography,Button, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import './Comment.css'
 import axios from 'axios'
 
 
 const Comment = (props) => {
-
-
-
+  // const [input,setInput]=useState({"ratingid":''})
+  var [rating,setRating]=useState([]);
   const [inputs, setInputs] = useState({
     restuarantid: '',
     restuarant: '',
@@ -28,6 +27,15 @@ const Comment = (props) => {
   
 
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    axios.get("http://localhost:3005/rview")
+    .then(response =>{
+        console.log(response.data)
+        setRating(response.data)
+    })
+    .catch(err=>console.log(err))
+},[])
 
   const inputHandler = (e) => {
     const {name,value}=e.target
@@ -60,7 +68,18 @@ const Comment = (props) => {
             <TextField  label="Restuarant" name='restuarant' variant="outlined" type='text' value={inputs.restuarant} onChange={inputHandler} required/><br/><br/>
             <TextField id="cuisine" name='cuisine' label="Cuisine Type" variant="outlined" type='text' value={inputs.cuisine} onChange={inputHandler}/><br/><br/>
             <TextField id="restuaranttype" name='restuaranttype' label="Restuarant Type" variant="outlined" type='text' value={inputs.restuaranttype} onChange={inputHandler}/><br/><br/>
-            <TextField id="rating" name='rating' label="Star Rating" variant="outlined" type='text' value={inputs.rating} onChange={inputHandler}/><br/><br/>
+            {/* <TextField id="rating" name='rating' label="Star Rating" variant="outlined" type='text' value={inputs.rating} onChange={inputHandler}/><br/><br/> */}
+            <select name="rating" value={inputs.rating} onChange={inputHandler}  >
+        {
+            rating.map((value,index)=>{
+                return(
+                    <option key={index} value={value.rating}>{value.rating}</option>
+                )
+
+
+            })
+        }
+    </select><br/><br/>
             <TextField id="contactno" name='contactno' label="Contact no:" variant="outlined" type='phone' value={inputs.contactno} onChange={inputHandler}/><br/><br/>
             <TextField id="manager" name='manager' label="Manager" variant="outlined" type='text' value={inputs.manager} onChange={inputHandler}/><br/><br/>
             <TextField id="nooftables" name='nooftables' label="No of Tables for Booking" variant="outlined" type='number' value={inputs.nooftables} onChange={inputHandler}/><br/><br/>

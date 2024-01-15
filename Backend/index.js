@@ -3,7 +3,10 @@ const express=require("express")
 const cors=require("cors")
 //Initailizing
 const app=new express();
-const registermodel = require('./registerdetails')
+const db=require("./Connection/Database")
+const registermodel = require('./registerdetails');
+const ratingmodel = require('./ratingdetails');
+const typemodel = require("./type");
 app.use(express.urlencoded({extended:true}))
 app.use(express.json());
 app.use(cors());
@@ -38,8 +41,22 @@ app.put('/sedit/:id', async(request,response)=>{
     await registermodel.findByIdAndUpdate(id,request.body)
     response.send("Record Deleted")
 })
+
+//rating submit rate
+app.post('/rate',(request,response)=>{
+    console.log(request.body)
+    new ratingmodel(request.body).save();
+    response.send("Record Sucessfully Saved")
+    })
+ //type submit
+ app.post('/type',(request,response)=>{
+    console.log(request.body)
+    new typemodel(request.body).save();
+    response.send("Record Sucessfully Saved")
+    })
 // for retriving data
-app.get('/view', async(request, response) => {
-    var data = await registermodel.find();
-    response.send(data)
-})
+
+    app.get("/rview",async(request,response)=>{
+        var data=await ratingmodel.find();
+        response.send(data);
+    })
